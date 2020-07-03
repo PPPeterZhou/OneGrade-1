@@ -12,8 +12,7 @@ class DBase():
                             cname     char(8),\
                             cnumber     int,\
                             credits     int,\
-                            session     char(16),\
-                            PRIMARY KEY (cname, cnumber)\
+                            session     char(16)\
                             );\
                             ")
 
