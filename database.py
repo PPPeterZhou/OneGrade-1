@@ -16,6 +16,33 @@ class DBase():
                             PRIMARY KEY (cname, cnumber)\
                             );\
                             ")
+        self.conn.commit()
+
+    def insert_course(self, cname, cnumber, credit, session):
+        if not self.isCourseAdded(cname, cnumber):
+            self.cursor.execute("INSERT INTO CourseInfo VALUES (?, ?, ?, ?);", (cname, cnumber, credit, session))
+            self.conn.commit()
+
+    def delete_course(self, cname, cnumber):
+        if self.isCourseAdded(cname, cnumber):
+            self.cursor.execute("DELETE FROM CourseInfo \
+            WHERE cname=:cname AND cnumber=:cnumber;", {"cname":cname, "cnumber":cnumber})
+            self.conn.commit()
+    
+    def isCourseAdded(self, cname, cnumber):
+        self.cursor.execute("SELECT * FROM CourseInfo \
+        WHERE cname=:cname AND cnumber=:cnumber;", {"cname":cname, "cnumber":cnumber})
+        rows = self.cursor.fetchall()
+        if rows:
+            return True
+        else:
+            return False
+        
+
 
 if __name__ == '__main__':
     db = DBase()
+    db.insert_course("MATH", 217, 3, "2020FALL")
+    db.insert_course("MATH", 317, 3, "2020FALL")
+    db.insert_course("MATH", 417, 3, "2020FALL")
+    db.delete_course("MATH", 217)
