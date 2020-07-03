@@ -2,12 +2,13 @@ import sys
 import datetime
 from PyQt5.QtWidgets import (QMainWindow, QAction, QMenu, QApplication, QDesktopWidget, QInputDialog)
 from PyQt5 import QtWidgets
+from database import DBase
 
 class OneGrade(QMainWindow):
 
     def __init__(self):
         super().__init__()
-        self.db = database.DBase()
+        self.db = DBase()
         self.initUI()
 
 
@@ -18,7 +19,6 @@ class OneGrade(QMainWindow):
         ActMenu.addAction(newAct)
 
         newAct.triggered.connect(self.showCourseInfoDialog)
-
         
         self.resize(600, 400)
         self.center()
@@ -52,9 +52,12 @@ class OneGrade(QMainWindow):
 
         course_info = [course_code, course_number, course_credit, course_session]
         # print('Course Code: %s\nCourse Number: %s\nCredit(s): %s \nSession: %s \n' % (course_code, course_number, course_credit, course_session))
-        print(course_info)
+        # print(course_info)
+        self.storeCourseInfo(course_info)
 
-
+    def storeCourseInfo(self, course_info):
+        self.db.insert_course(course_info[0], course_info[1], course_info[2], course_info[3])
+        
 
 if __name__ == '__main__':
 
