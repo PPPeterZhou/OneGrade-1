@@ -46,4 +46,3 @@ if __name__ == '__main__':
     db.insert_course("MATH", 217, 3, "2020FALL")
     db.insert_course("MATH", 317, 3, "2020FALL")
     db.insert_course("MATH", 417, 3, "2020FALL")
-    db.delete_course("MATH", 217)
