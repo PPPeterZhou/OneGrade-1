@@ -3,7 +3,6 @@ import datetime
 from PyQt5.QtWidgets import (QMainWindow, QAction, QMenu, QApplication, QDesktopWidget, QInputDialog)
 from PyQt5 import QtWidgets
 
-
 class OneGrade(QMainWindow):
 
     def __init__(self):
