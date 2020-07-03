@@ -13,6 +13,7 @@ class DBase():
                             cnumber     int,\
                             credits     int,\
                             session     char(16),\
+                            TargetGrade     int,\
                             PRIMARY KEY (cname, cnumber)\
                             );\
                             ")
@@ -20,7 +21,7 @@ class DBase():
 
     def insert_course(self, cname, cnumber, credit, session):
         if not self.isCourseAdded(cname, cnumber):
-            self.cursor.execute("INSERT INTO CourseInfo VALUES (?, ?, ?, ?);", (cname, cnumber, credit, session))
+            self.cursor.execute("INSERT INTO CourseInfo VALUES (?, ?, ?, ?, 100);", (cname, cnumber, credit, session))
             self.conn.commit()
 
     def delete_course(self, cname, cnumber):
