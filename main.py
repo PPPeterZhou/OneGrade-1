@@ -1,25 +1,10 @@
-#!/usr/bin/python3
-# -*- coding: utf-8 -*-
-
-"""
-ZetCode PyQt5 tutorial 
-
-This program creates a menubar. The
-menubar has one menu with an exit action.
-
-Author: Jan Bodnar
-Website: zetcode.com 
-Last edited: January 2017
-"""
-
 import sys
-from PyQt5.QtWidgets import QMainWindow, QAction, qApp, QApplication, QDialog,QPushButton
-from PyQt5.QtGui import QIcon
-import os
+import datetime
+from PyQt5.QtWidgets import (QMainWindow, QAction, QMenu, QApplication, QDesktopWidget, QInputDialog)
+from PyQt5 import QtWidgets
 
 
-
-class Example(QMainWindow):
+class OneGrade(QMainWindow):
 
     def __init__(self):
         super().__init__()
@@ -27,37 +12,53 @@ class Example(QMainWindow):
         self.initUI()
 
 
-    def initUI(self):               
-
-        exitAct = QAction(QIcon('exit.png'), '&Exit', self)        
-        exitAct.setShortcut('Ctrl+Q')
-        exitAct.setStatusTip('Exit application')
-        exitAct.triggered.connect(qApp.quit)
-
-        newact = QAction(QIcon('exit.png'), '&new', self)
-        newact.triggered.connect(self.showDialog)
-        self.statusBar()
-
+    def initUI(self):
         menubar = self.menuBar()
-        fileMenu = menubar.addMenu('&File')
-        fileMenu.addAction(exitAct)
-        fileMenu.addAction(newact)
-        # new.addAction(newact)
+        ActMenu = menubar.addMenu('Action')
+        newAct = QAction('New', self)        
+        ActMenu.addAction(newAct)
 
-        self.setGeometry(200, 200, 1100, 1200)
-        self.setWindowTitle('Simple menu')    
+        newAct.triggered.connect(self.showCourseInfoDialog)
+
+        
+        self.resize(600, 400)
+        self.center()
+        self.setWindowTitle("OneGrade")
         self.show()
+    
+    def center(self):
 
-    def showDialog(self):
-        d = QDialog()
-        b1 = QPushButton("ok",d)
-        b1.move(50,50)
-        d.setWindowTitle("Dialog")
+        qr = self.frameGeometry()
+        cp = QDesktopWidget().availableGeometry().center()
+        qr.moveCenter(cp)
+        self.move(qr.topLeft())
 
-        d.exec_()
+    def showCourseInfoDialog(self):
+        
+        course_code, course_code_ok  = QInputDialog.getText(self, 'Course Infomation', 
+            'Course Code: ')
+
+        if course_code_ok:
+            course_number, course_number_ok  = QInputDialog.getText(self, 'Course Infomation', 
+            'Course Number: ')
+
+        if course_number_ok:
+            course_credit, course_credit_ok  = QInputDialog.getText(self, 'Course Infomation', 
+            'Course Credit(s): ')
+
+        if course_credit_ok:
+            year = datetime.datetime.now().year
+            langs =[str(year) + 'Winter', str(year) + 'Spring', str(year) + 'Summer', str(year) + 'Fall', str(year+1) + 'Winter', str(year+1) + 'Spring', str(year+1) + 'Summer', str(year+1) + 'Fall'] 
+            course_session, course_session_ok = QtWidgets.QInputDialog.getItem(self, 'Course Infomation', 'Course Session:', langs) 
+
+        course_info = [course_code, course_number, course_credit, course_session]
+        # print('Course Code: %s\nCourse Number: %s\nCredit(s): %s \nSession: %s \n' % (course_code, course_number, course_credit, course_session))
+        print(course_info)
+
+
 
 if __name__ == '__main__':
 
     app = QApplication(sys.argv)
-    ex = Example()
+    program = OneGrade()
     sys.exit(app.exec_())
