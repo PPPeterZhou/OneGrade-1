@@ -19,9 +19,9 @@ class DBase():
                             ")
         self.conn.commit()
 
-    def insert_course(self, cname, cnumber, credit, session):
+    def insert_course(self, cname, cnumber, credit, session, TargetGrade):
         if not self.isCourseAdded(cname, cnumber):
-            self.cursor.execute("INSERT INTO CourseInfo VALUES (?, ?, ?, ?, 100);", (cname, cnumber, credit, session))
+            self.cursor.execute("INSERT INTO CourseInfo VALUES (?, ?, ?, ?, ?);", (cname, cnumber, credit, session, TargetGrade))
             self.conn.commit()
 
     def delete_course(self, cname, cnumber):
@@ -38,11 +38,14 @@ class DBase():
             return True
         else:
             return False
-        
+    
+    def clear_database(self):
+        self.cursor.execute("DELETE FROM CourseInfo;")
+        self.conn.commit()
 
 
 if __name__ == '__main__':
     db = DBase()
-    db.insert_course("MATH", 217, 3, "2020FALL")
-    db.insert_course("MATH", 317, 3, "2020FALL")
-    db.insert_course("MATH", 417, 3, "2020FALL")
+    db.insert_course("MATH", 217, 3, "2020FALL", 90)
+    db.insert_course("MATH", 317, 3, "2020FALL", 89)
+    db.insert_course("MATH", 417, 3, "2020FALL", 88)
