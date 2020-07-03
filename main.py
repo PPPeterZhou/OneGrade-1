@@ -38,20 +38,20 @@ class OneGrade(QMainWindow):
 
         if course_code_ok:
             course_number, course_number_ok  = QInputDialog.getText(self, 'Course Infomation', 
-            'Course Number: ')
+            'Course Number(100-999): ')
 
         if course_number_ok:
             course_target, course_target_ok  = QInputDialog.getText(self, 'Course Infomation', 
-            'Course Target: ')
+            'Course Target(0-100): ')
         
         if course_target_ok:
             course_credit, course_credit_ok  = QInputDialog.getText(self, 'Course Infomation', 
-            'Course Credit(s): ')
+            'Course Credit(s)(0-10): ')
 
         if course_credit_ok:
             year = datetime.datetime.now().year
-            langs =[str(year) + 'Winter', str(year) + 'Spring', str(year) + 'Summer', str(year) + 'Fall', str(year+1) + 'Winter', str(year+1) + 'Spring', str(year+1) + 'Summer', str(year+1) + 'Fall'] 
-            course_session, course_session_ok = QtWidgets.QInputDialog.getItem(self, 'Course Infomation', 'Course Session:', langs) 
+            sessions = [str(year) + 'Winter', str(year) + 'Spring', str(year) + 'Summer', str(year) + 'Fall', str(year+1) + 'Winter', str(year+1) + 'Spring', str(year+1) + 'Summer', str(year+1) + 'Fall'] 
+            course_session, course_session_ok = QtWidgets.QInputDialog.getItem(self, 'Course Infomation', 'Course Session:', sessions) 
 
         course_info = [course_code, course_number, course_target, course_credit, course_session]
         # print('Course Code: %s\nCourse Number: %s\nCredit(s): %s \nSession: %s \n' % (course_code, course_number, course_credit, course_session))
