@@ -76,6 +76,8 @@ class DBase():
     def clear_database(self):
         self.cursor.execute("DELETE FROM CourseInfo;")
         self.conn.commit()
+    
+    def get_componet_info(self, cname, cnumber, Component):
 
 
 if __name__ == '__main__':
@@ -87,4 +89,3 @@ if __name__ == '__main__':
     db.insert_component("MATH", 217, "Midterm2", 50, 99)
     db.insert_component("MATH", 317, "Midterm2", 50, 99)
     db.insert_component("MATH", 317, "Midterm2", 50, 99)
-    db.delete_component("MATH", 217, "Midterm2")
