@@ -1,83 +1,113 @@
-import sys, datetime, database
-from PyQt5.QtWidgets import (QMainWindow, QAction, QMenu, QApplication, QDesktopWidget, QInputDialog, QLabel)
-from PyQt5 import QtWidgets
+import analyzer
+import sqlite3
+import time
 from database import DBase
 
-class OneGrade(QMainWindow):
-
-    def __init__(self):
-        super().__init__()
+class OneGrade():
+    def __init__(self, path):
         self.db = DBase()
-        self.initUI()
-        
 
 
-    def initUI(self):
-        menubar = self.menuBar()
-        ActMenu = menubar.addMenu('Action')
-        newAct = QAction('New', self)        
-        ActMenu.addAction(newAct)
+    def connect(self):
+        self.connection = sqlite3.connect(self.path)
+        self.cursor = self.connection.cursor()
+        return
 
-        newAct.triggered.connect(self.showCourseInfoDialog)
-        
-        
-        self.resize(600, 400)
-        self.center()
-        self.setWindowTitle("OneGrade")
-        self.refresh()
-        self.show()
-    
-    def center(self):
+    def show_dashboard(self):
+        self.welcome()
+        self.chooseSession()
 
-        qr = self.frameGeometry()
-        cp = QDesktopWidget().availableGeometry().center()
-        qr.moveCenter(cp)
-        self.move(qr.topLeft())
+    def welcome(self):
+        print("\n            -------------------------------")
+        print("           / Welcome to OneGrade System! /")
+        print("           ------------------------------\n")
 
-    def showCourseInfoDialog(self):
-        
-        course_code, course_code_ok  = QInputDialog.getText(self, 'Course Infomation', 
-            'Course Code: ')
+    def chooseSession(self):
+        courses_info = self.db.retrieveCourseInfoData()
+        print("\n        --------------------------------------")
+        print("       / Which Session Would You Like to See?/")
+        print("       --------------------------------------\n")
+        print("")
+        print(" --------------------Session--------------------")
 
-        if course_code_ok:
-            course_number, course_number_ok  = QInputDialog.getText(self, 'Course Infomation', 
-            'Course Number(100-999): ')
+        session_list = []
+        for course in courses_info:
+            session_list.append(course[3])
+        session_list = list(dict.fromkeys(session_list))
 
-        if course_number_ok:
-            course_target, course_target_ok  = QInputDialog.getText(self, 'Course Infomation', 
-            'Course Target(0-100): ')
-        
-        if course_target_ok:
-            course_credit, course_credit_ok  = QInputDialog.getText(self, 'Course Infomation', 
-            'Course Credit(s)(0-10): ')
+        session = ""
+        for element in session_list:
+            session += (element + "   ")
+        print("|  " + session + "  |")
 
-        if course_credit_ok:
-            year = datetime.datetime.now().year
-            sessions = [str(year) + 'Winter', str(year) + 'Spring', str(year) + 'Summer', str(year) + 'Fall', str(year+1) + 'Winter', str(year+1) + 'Spring', str(year+1) + 'Summer', str(year+1) + 'Fall'] 
-            course_session, course_session_ok = QtWidgets.QInputDialog.getItem(self, 'Course Infomation', 'Course Session:', sessions) 
+        print(" -----------------------------------------------")
+        session_chosen = input("I choose: ")
 
-        course_info = [course_code, course_number, course_target, course_credit, course_session]
-        # print('Course Code: %s\nCourse Number: %s\nCredit(s): %s \nSession: %s \n' % (course_code, course_number, course_credit, course_session))
-        # print(course_info)
-        self.storeCourseInfo(course_info)
+        self.show_courses(session_chosen)
 
-    def storeCourseInfo(self, course_info):
-        self.db.insert_course(course_info[0], course_info[1], course_info[2], course_info[3], course_info[4])
-        self.refresh()
+    def show_courses(self, session):
+        courses_info = self.db.retrieveCourseInfoData()
 
-    def refresh(self):
-        y = 0
-        course_infos = self.db.retrieveData()
-        for course_info in course_infos:
-            label = QLabel('Course Code: %s\nCourse Number: %s\nCourse Target: %s\nCredit(s): %s \nSession: %s \n' % (course_info[0], course_info[1], course_info[2], course_info[3], course_info[4]), self)
-            label.resize(500, 100)
-            label.move(10, 100 * y)
-            y += 1
-            print(y)
-        self.show()
+        print("\n -----------------Courses Information---------------")
+        print("|Course       Credits      Session      Target Grade|")
+        for course in courses_info:
+            if course[3].upper() == session.upper():
+                print("|%s%s         %s         %s          %s     |" % (course[0], course[1], course[2], course[3], course[4]))
+        print(" ---------------------------------------------------")
+        self.command(session.upper())
+
+    def command(self, session):
+        courses_info = self.db.retrieveCourseInfoData()
+        course_list = []
+        for course in courses_info:
+            if course[3].upper() == session.upper():
+                course_list.append((course[0] + str(course[1])).upper())
+        course_list = list(dict.fromkeys(course_list))
+
+        print("\n            -----------------------------------------")
+        print("           /       What Would You Like to Do?      /")
+        print("          /    a: Check the Detail of the Course  /")
+        print("         /     b: Add a new Course               /")
+        print("        -----------------------------------------")
+        user_command = input("I want to: ")
+        while True:
+            if user_command == "a":
+                while True:
+                    course_to_check = input("Which Course: (e.g. MATH217) ")
+                    if course_to_check.upper() not in course_list:
+                        print("Invalid Input!")
+                    else:
+                        self.courseDetail(course_to_check.upper())
+                        break
+                break
+            elif user_command == "b":
+                self.addCourse(session)
+                break
+            else:
+                print("Invalid Input!")
+
+    def courseDetail(self, course):
+        courses_details = self.db.retrieveCourseGradeData()
+        print("\n -----------------Courses Grade--------------------")
+        print("|Course        Component        Weight        Grade|")
+        for detail in courses_details:
+            if course == (detail[0] + str(detail[1])):
+                print("|%s        %s          %s         %s|" % (course, detail[2], detail[3], detail[4]))
+        print(" --------------------------------------------------")
+
+
+    def addCourse(self, session):
+        cname = input("Course Name: ")
+        cnumber = input("Course Number: ")
+        credit = input("Course Credit(s): ")
+        target_grade = input("Course Target Grade: ")
+        self.db.insert_course(cname, cnumber, credit, session, target_grade)
+
+
+def main():
+    path = "./grades.db"
+    program = OneGrade(path)
+    program.show_dashboard()
 
 if __name__ == '__main__':
-
-    app = QApplication(sys.argv)
-    program = OneGrade()
-    sys.exit(app.exec_())
+    main()
