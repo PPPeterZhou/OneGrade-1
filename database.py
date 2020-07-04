@@ -51,12 +51,12 @@ class DBase():
             return False
         
     def retrieveCourseInfoData(self):
-        self.cursor.execute("SELECT * FROM CourseInfo")
+        self.cursor.execute("SELECT * FROM CourseInfo;")
         rows = self.cursor.fetchall() # each course info
         return rows
 
     def retrieveCourseGradeData(self):
-        self.cursor.execute("SELECT * FROM CourseGrade")
+        self.cursor.execute("SELECT * FROM CourseGrade;")
         rows = self.cursor.fetchall() # each course info
         return rows
     
@@ -86,8 +86,6 @@ class DBase():
     def clear_database(self):
         self.cursor.execute("DELETE FROM CourseInfo;")
         self.conn.commit()
-    
-    def get_componet_info(self, cname, cnumber, Component):
 
 
 if __name__ == '__main__':
