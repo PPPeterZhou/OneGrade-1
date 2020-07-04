@@ -60,7 +60,7 @@ class DBase():
         else:
             return False
 
-    def insert_component(self, cname, cnumber, Component, Weight, Grade):
+    def insert_component(self, cname, cnumber, Component, Weight, Grade=None):
         if not self.isComponentAdded(cname, cnumber, Component) and self.isCourseAdded(cname, cnumber):
             self.cursor.execute("INSERT INTO CourseGrade VALUES\
                  (?, ?, ?, ?, ?);", (cname, cnumber, Component, Weight, Grade))
