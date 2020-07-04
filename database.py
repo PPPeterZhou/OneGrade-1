@@ -49,6 +49,16 @@ class DBase():
             return True
         else:
             return False
+        
+    def retrieveCourseInfoData(self):
+        self.cursor.execute("SELECT * FROM CourseInfo")
+        rows = self.cursor.fetchall() # each course info
+        return rows
+
+    def retrieveCourseGradeData(self):
+        self.cursor.execute("SELECT * FROM CourseGrade")
+        rows = self.cursor.fetchall() # each course info
+        return rows
     
     def isComponentAdded(self, cname, cnumber, Component):
         self.cursor.execute("SELECT * FROM CourseGrade \
