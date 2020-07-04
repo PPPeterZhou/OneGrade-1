@@ -38,6 +38,11 @@ class DBase():
             return True
         else:
             return False
+        
+    def retrieveData(self):
+        self.cursor.execute("SELECT * FROM CourseInfo")
+        rows = self.cursor.fetchall() # each course info
+        return rows
     
     def clear_database(self):
         self.cursor.execute("DELETE FROM CourseInfo;")
@@ -49,3 +54,4 @@ if __name__ == '__main__':
     db.insert_course("MATH", 217, 3, "2020FALL", 90)
     db.insert_course("MATH", 317, 3, "2020FALL", 89)
     db.insert_course("MATH", 417, 3, "2020FALL", 88)
+    db.retrieveData()

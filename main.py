@@ -1,5 +1,5 @@
 import sys, datetime, database
-from PyQt5.QtWidgets import (QMainWindow, QAction, QMenu, QApplication, QDesktopWidget, QInputDialog)
+from PyQt5.QtWidgets import (QMainWindow, QAction, QMenu, QApplication, QDesktopWidget, QInputDialog, QLabel)
 from PyQt5 import QtWidgets
 from database import DBase
 
@@ -9,6 +9,7 @@ class OneGrade(QMainWindow):
         super().__init__()
         self.db = DBase()
         self.initUI()
+        
 
 
     def initUI(self):
@@ -19,9 +20,11 @@ class OneGrade(QMainWindow):
 
         newAct.triggered.connect(self.showCourseInfoDialog)
         
+        
         self.resize(600, 400)
         self.center()
         self.setWindowTitle("OneGrade")
+        self.refresh()
         self.show()
     
     def center(self):
@@ -60,7 +63,18 @@ class OneGrade(QMainWindow):
 
     def storeCourseInfo(self, course_info):
         self.db.insert_course(course_info[0], course_info[1], course_info[2], course_info[3], course_info[4])
-        
+        self.refresh()
+
+    def refresh(self):
+        y = 0
+        course_infos = self.db.retrieveData()
+        for course_info in course_infos:
+            label = QLabel('Course Code: %s\nCourse Number: %s\nCourse Target: %s\nCredit(s): %s \nSession: %s \n' % (course_info[0], course_info[1], course_info[2], course_info[3], course_info[4]), self)
+            label.resize(500, 100)
+            label.move(10, 100 * y)
+            y += 1
+            print(y)
+        self.show()
 
 if __name__ == '__main__':
 
