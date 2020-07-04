@@ -31,7 +31,8 @@ class DBase():
 
     def insert_course(self, cname, cnumber, credit, session, TargetGrade):
         if not self.isCourseAdded(cname, cnumber):
-            self.cursor.execute("INSERT INTO CourseInfo VALUES (?, ?, ?, ?, ?);", (cname, cnumber, credit, session, TargetGrade))
+            self.cursor.execute("INSERT INTO CourseInfo VALUES\
+                 (?, ?, ?, ?, ?);", (cname, cnumber, credit, session, TargetGrade))
             self.conn.commit()
 
     def delete_course(self, cname, cnumber):
@@ -51,7 +52,8 @@ class DBase():
     
     def isComponentAdded(self, cname, cnumber, Component):
         self.cursor.execute("SELECT * FROM CourseGrade \
-        WHERE cname=:cname AND cnumber=:cnumber AND Component=:Component;", {"cname":cname, "cnumber":cnumber, "Component":Component})
+        WHERE cname=:cname AND cnumber=:cnumber \
+        AND Component=:Component;", {"cname":cname, "cnumber":cnumber, "Component":Component})
         rows = self.cursor.fetchall()
         if rows:
             return True
@@ -60,13 +62,15 @@ class DBase():
 
     def insert_component(self, cname, cnumber, Component, Weight, Grade):
         if not self.isComponentAdded(cname, cnumber, Component) and self.isCourseAdded(cname, cnumber):
-            self.cursor.execute("INSERT INTO CourseGrade VALUES (?, ?, ?, ?, ?);", (cname, cnumber, Component, Weight, Grade))
+            self.cursor.execute("INSERT INTO CourseGrade VALUES\
+                 (?, ?, ?, ?, ?);", (cname, cnumber, Component, Weight, Grade))
             self.conn.commit()
     
     def delete_component(self, cname, cnumber, Component):
         if self.isComponentAdded(cname, cnumber, Component):
             self.cursor.execute("DELETE FROM CourseGrade \
-            WHERE cname=:cname AND cnumber=:cnumber AND Component=:Component;", {"cname":cname, "cnumber":cnumber, "Component":Component})
+            WHERE cname=:cname AND cnumber=:cnumber AND \
+                Component=:Component;", {"cname":cname, "cnumber":cnumber, "Component":Component})
             self.conn.commit()
     
     def clear_database(self):
