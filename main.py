@@ -18,6 +18,10 @@ class OneGrade():
 
             if session_chosen=="Q":
                 sys.exit()
+
+            elif session_chosen == "A": # add a session
+                self.addCourseInNewSession()
+
             elif self.db.isSessionEmpty(session_chosen):
                 print("Invalid session.")
                 continue
@@ -66,6 +70,11 @@ class OneGrade():
             elif user_command == "b":
                 self.addCourse(session)
                 continue
+
+            elif user_command == "c":
+                self.deleteCourse(session)
+                continue
+
             elif user_command == "q":
                 return None
             else:
@@ -89,6 +98,17 @@ class OneGrade():
 
         analyze = analyzer(cname, target_grade, grade_details, self.db)
         self.ui.show_analysis(grade_details, analyze)
+
+    def addCourseInNewSession(self):
+        cname = input("Course Name: ")
+        credit = input("Course Credit(s): ")
+        session = input("Course Session: ")
+        targetGrade = input("Target Grade: ")
+        self.db.insert_course(cname, int(credit), session, int(targetGrade))
+
+    def deleteCourse(self, session):
+        session_to_delete = input("Which Session to Delete: ")
+        self.db.delete_course
 
     def add_component(self, cname, component):
         pass

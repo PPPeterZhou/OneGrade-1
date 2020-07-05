@@ -13,6 +13,12 @@ class OneGrade_UI():
         print("       / Which Session Would You Like to See?/")
         print("       --------------------------------------\n")
         print("")
+
+        print("\n           ------------------------------------------")
+        print("          /         What Would You Like to Do?      /")
+        print("         /     a: Add a Course in a New Session    /")
+        print("        /      b: View a Session (e.g. 2020FALL)  /")
+        print("        ------------------------------------------\n")
         print(" --------------------Session--------------------")
 
     def show_sessions(self, session_list):
@@ -24,8 +30,9 @@ class OneGrade_UI():
         print("\n            -----------------------------------------")
         print("           /       What Would You Like to Do?      /")
         print("          /    a: Check the Detail of the Course  /")
-        print("         /     b: Add a new Course               /")
-        print("        -----------------------------------------")
+        print("         /     b: Add a New Course               /")
+        print("        /      c: Delete a Course               /")
+        print("       -----------------------------------------")
 
     def show_courses(self, courses_info):
         print("\n {0}Courses Information{0}".format("-"*17))
