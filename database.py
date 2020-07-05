@@ -37,7 +37,6 @@ class DBase():
 
     def delete_course(self, cname):
         cname = cname.upper()
-        session = session.upper()
         if self.isCourseAdded(cname):
             self.cursor.execute("DELETE FROM CourseInfo \
             WHERE cname=:cname;", {"cname":cname})

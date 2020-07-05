@@ -25,6 +25,7 @@ class OneGrade_UI():
         print("           /       What Would You Like to Do?      /")
         print("          /    a: Check the Detail of the Course  /")
         print("         /     b: Add a new Course               /")
+        print("        /      d: Delete a course               /")
         print("        -----------------------------------------")
 
     def show_courses(self, courses_info):
