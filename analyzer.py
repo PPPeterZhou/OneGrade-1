@@ -1,10 +1,13 @@
 class analyzer():
-    def __init__(self, cname, target_grade, grade_details):
+    def __init__(self, cname, target_grade, grade_details, db):
         self.cname = cname
         self.total_lost_marks = 0.0
         self.target_grade = target_grade
         self.comment_format = "|{0:^60}|"
         self.total_lost_marks = 0
+        self.db = db
+        self.total_weight = self.db.sum_weight(cname)
+        print(self.total_weight)
 
     def calculate_grade_needed(self, weight):
         pass

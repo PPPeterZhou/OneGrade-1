@@ -110,6 +110,15 @@ class DBase():
         row = self.cursor.fetchone()
         return row[0]
 
+    def sum_weight(self, cname):
+        self.cursor.execute("SELECT Weight, Grade FROM CourseGrade WHERE cname=:cname and Grade <> NULL;", {"cname":cname})
+        rows = self.cursor.fetchall()
+        gain_so_far = 0
+        for row in rows:
+            gain_so_far += (row[0] / 100 * row[1])
+        print(gain_so_far)
+        return gain_so_far
+
 if __name__ == '__main__':
     db = DBase()
     db.insert_course("MATH217", 3, "2020FALL", 90)
