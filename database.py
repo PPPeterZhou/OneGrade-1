@@ -10,45 +10,43 @@ class DBase():
     def create_table(self):
         self.cursor.execute("PRAGMA foreign_keys=on;")
         self.cursor.execute("CREATE TABLE IF NOT EXISTS CourseInfo(\
-                            cname     char(8),\
-                            cnumber     int,\
+                            cname     char(16),\
                             credits     int,\
                             session     char(16),\
                             TargetGrade     int,\
-                            PRIMARY KEY (cname, cnumber)\
+                            PRIMARY KEY (cname) \
                             );")
         self.cursor.execute("CREATE TABLE IF NOT EXISTS CourseGrade(\
-                            cname     char(8),\
-                            cnumber     int,\
+                            cname     char(16),\
                             Component   char(16),\
                             Weight      float,\
                             Grade       float,\
-                            PRIMARY KEY (cname, cnumber, Component),\
-                            FOREIGN KEY (cname, cnumber) references CourseInfo\
+                            PRIMARY KEY (cname, Component),\
+                            FOREIGN KEY (cname) references CourseInfo\
                             ON DELETE CASCADE\
                             );")
         self.conn.commit()
 
-    def insert_course(self, cname, cnumber, credit, session, TargetGrade):
+    def insert_course(self, cname, credit, session, TargetGrade):
         cname = cname.upper()
         session = session.upper()
-        if not self.isCourseAdded(cname, cnumber):
+        if not self.isCourseAdded(cname):
             self.cursor.execute("INSERT INTO CourseInfo VALUES\
-                 (?, ?, ?, ?, ?);", (cname, cnumber, credit, session, TargetGrade))
+                 (?, ?, ?, ?);", (cname, credit, session, TargetGrade))
             self.conn.commit()
 
-    def delete_course(self, cname, cnumber):
+    def delete_course(self, cname):
         cname = cname.upper()
         session = session.upper()
-        if self.isCourseAdded(cname, cnumber):
+        if self.isCourseAdded(cname):
             self.cursor.execute("DELETE FROM CourseInfo \
-            WHERE cname=:cname AND cnumber=:cnumber;", {"cname":cname, "cnumber":cnumber})
+            WHERE cname=:cname;", {"cname":cname})
             self.conn.commit()
     
-    def isCourseAdded(self, cname, cnumber):
+    def isCourseAdded(self, cname):
         cname = cname.upper()
         self.cursor.execute("SELECT * FROM CourseInfo \
-        WHERE cname=:cname AND cnumber=:cnumber;", {"cname":cname, "cnumber":cnumber})
+        WHERE cname=:cname;", {"cname":cname})
         rows = self.cursor.fetchall()
         if rows:
             return True
@@ -65,27 +63,27 @@ class DBase():
         rows = self.cursor.fetchall() # each course info
         return rows
     
-    def isComponentAdded(self, cname, cnumber, Component):
+    def isComponentAdded(self, cname, Component):
         self.cursor.execute("SELECT * FROM CourseGrade \
-        WHERE cname=:cname AND cnumber=:cnumber \
-        AND Component=:Component;", {"cname":cname, "cnumber":cnumber, "Component":Component})
+        WHERE cname=:cname \
+        AND Component=:Component;", {"cname":cname, "Component":Component})
         rows = self.cursor.fetchall()
         if rows:
             return True
         else:
             return False
 
-    def insert_component(self, cname, cnumber, Component, Weight, Grade=None):
-        if not self.isComponentAdded(cname, cnumber, Component) and self.isCourseAdded(cname, cnumber):
+    def insert_component(self, cname, Component, Weight, Grade=None):
+        if not self.isComponentAdded(cname, Component) and self.isCourseAdded(cname):
             self.cursor.execute("INSERT INTO CourseGrade VALUES\
-                 (?, ?, ?, ?, ?);", (cname, cnumber, Component, Weight, Grade))
+                 (?, ?, ?, ?);", (cname, Component, Weight, Grade))
             self.conn.commit()
     
-    def delete_component(self, cname, cnumber, Component):
-        if self.isComponentAdded(cname, cnumber, Component):
+    def delete_component(self, cname, Component):
+        if self.isComponentAdded(cname, Component):
             self.cursor.execute("DELETE FROM CourseGrade \
-            WHERE cname=:cname AND cnumber=:cnumber AND \
-                Component=:Component;", {"cname":cname, "cnumber":cnumber, "Component":Component})
+            WHERE cname=:cname AND \
+                Component=:Component;", {"cname":cname, "Component":Component})
             self.conn.commit()
     
     def clear_database(self):
@@ -105,11 +103,11 @@ class DBase():
 
 if __name__ == '__main__':
     db = DBase()
-    db.insert_course("MATH", 217, 3, "2020FALL", 90)
-    db.insert_course("MATH", 317, 3, "2020FALL", 89)
-    db.insert_course("MATH", 417, 3, "2020FALL", 88)
-    db.insert_course("MATH", 418, 3, "2020Winter", 88)
-    db.insert_component("MATH", 217, "Midterm", 50, 100)
-    db.insert_component("MATH", 217, "Midterm2", 50, 99)
-    db.insert_component("MATH", 317, "Midterm2", 50, 99)
-    db.insert_component("MATH", 317, "Midterm2", 50, 99)
+    db.insert_course("MATH217", 3, "2020FALL", 90)
+    db.insert_course("MATH317", 3, "2020FALL", 89)
+    db.insert_course("MATH417", 3, "2020FALL", 88)
+    db.insert_course("MATH418", 3, "2020Winter", 88)
+    db.insert_component("MATH217", "Midterm", 50, 100)
+    db.insert_component("MATH217", "Midterm2", 50, 99)
+    db.insert_component("MATH317", "Midterm2", 50, 99)
+    db.insert_component("MATH317", "Midterm2", 50, 99)

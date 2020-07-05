@@ -36,7 +36,7 @@ class OneGrade():
         courses_info = self.db.retrieveCourseInfoData()
         session_list = []
         for course in courses_info:
-            session_list.append(course[3])
+            session_list.append(course[2])
         session_list = list(dict.fromkeys(session_list))
 
         for session in session_list:
@@ -45,20 +45,19 @@ class OneGrade():
 
     def show_courses(self, session):
         courses_info = self.db.retrieveCourseInfoData()
-
         print("\n ----------------Courses Information--------------")
         print("|Course      Credits      Session      TargetGrade|")
         for course in courses_info:
-            if course[3] == session:
-                print("|{0:<12s}{1}{2}{3}|".format(course[0]+str(course[1]), str(course[2]).center(8), str(course[3]).center(20), str(course[4]).center(9)))
+            if course[2] == session:
+                print("|{0:<12s}{1}{2}{3}|".format(course[0], str(course[1]).center(8), str(course[2]).center(20), str(course[3]).center(9)))
                 print(" -------------------------------------------------")
 
     def isCourseInSession(self, course_selected, session):
         courses_info = self.db.retrieveCourseInfoData()
         course_list = []
         for course in courses_info:
-            if course[3] == session:
-                course_list.append(course[0] + str(course[1]))
+            if course[2] == session:
+                course_list.append(course[0])
         course_list = list(dict.fromkeys(course_list))
         return (course_selected in course_list)
 
@@ -71,6 +70,12 @@ class OneGrade():
         print("        -----------------------------------------")
         return input(": ").lower()
 
+    def addCourse(self, session):
+        cname = input("Course Name: ")
+        credit = input("Course Credit(s): ")
+        target_grade = input("Course Target Grade: ")
+        self.db.insert_course(cname, credit, session, target_grade)
+
     def start_program(self):
         self.welcome()
         while True:
@@ -78,11 +83,9 @@ class OneGrade():
             while True:
                 course_selected = self.command(session_chosen)
                 if course_selected:
-                    self.courseDetail(course_selected)
-                elif course_selected is False:
+                    self.courseDetail(session_chosen, course_selected)
+                elif course_selected is None:
                     break
-                else:
-                    continue
 
     def command(self, session):
         while True:
@@ -98,33 +101,35 @@ class OneGrade():
                 self.addCourse(session)
                 continue
             elif user_command == "q":
-                return False
+                return None
             else:
                 print("Invalid Input!")
                 continue
 
-    def courseDetail(self, course):
+    def courseDetail(self, session, cname):
         while True:
-            courses_details = self.db.retrieveCourseGradeData()
-            print("\n -----------------Courses Grade--------------------")
-            print("|Course        Component        Weight        Grade|")
-            for detail in courses_details:
-                if course == (detail[0] + str(detail[1])):
-                    print("|%s        %s          %s         %s|" % (course, detail[2], detail[3], detail[4]))
-            print(" --------------------------------------------------")
-            print("You may add a course component by command 'a'.")
-            user_input = input(": ").lower()
-            if user_input == "q":
+            user_cmd = self.take_component_cmd(session, cname)
+            if user_cmd == "a":
+                pass
+            elif user_cmd == "b":
+                pass
+            elif user_cmd == "q":
                 break
-            else:
-                continue
 
-    def addCourse(self, session):
-        cname = input("Course Name: ")
-        cnumber = input("Course Number: ")
-        credit = input("Course Credit(s): ")
-        target_grade = input("Course Target Grade: ")
-        self.db.insert_course(cname, cnumber, credit, session, target_grade)
+    def take_component_cmd(self, session, cname):
+        courses_details = self.db.retrieveCourseGradeData()
+        print("\n {0}Courses Grade{0}".format(18*"-"))
+        print("|{0:<12}{1:^12}{2:^12}{3:^12}|".format("Course", "Component", "Weight", "Grade"))
+        for detail in courses_details:
+            if cname == (detail[0]):
+                print("|{0:<12}{1:^12}{2:^12}{3:^12}|".format(cname, detail[1], detail[2], detail[3]))
+        print(" {}".format("-"*49))
+
+        print("You may add a course component by command 'a'.")
+        return input(": ").lower()
+
+    def add_component(self, cname, component):
+        pass
 
 
 def main():
