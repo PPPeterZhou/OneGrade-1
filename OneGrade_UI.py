@@ -37,9 +37,13 @@ class OneGrade_UI():
     def show_courses(self, courses_info):
         print("\n {0}Courses Information{0}".format("-"*17))
         print(self.course_format.format("Course", "Credits", "Session", "TargetGrade"))
+        i = 0
         for course in courses_info:
+            if i > 0:
+                print(" {}".format("-"*54))
             print(self.course_format.format(course[0], course[1], course[2], course[3]))
-            print(" {}".format("-"*54))
+            i += 1
+        print(" {}".format("-"*54))
 
     def show_analysis(self, courses_details, analyze):
         print("\n {0}Courses Grades{0}".format(23*"-"))

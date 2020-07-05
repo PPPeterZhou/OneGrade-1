@@ -30,8 +30,9 @@ class OneGrade():
 
         return session_chosen
 
-    def isCourseInSession(self, course_selected, courses_info):
+    def isCourseInSession(self, course_selected, session):
         course_list = []
+        courses_info = self.db.retrieveCourseInfoData(session)
         for course in courses_info:
             course_list.append(course[0])
         course_list = list(dict.fromkeys(course_list))
@@ -42,6 +43,13 @@ class OneGrade():
         credit = input("Course Credit(s): ")
         target_grade = input("Course Target Grade: ")
         self.db.insert_course(cname, credit, session, target_grade)
+    
+    def del_Course(self, session):
+        cname = input("Name of course you want to delete: ").upper()
+        if self.isCourseInSession(cname, session):
+            self.db.delete_course(cname)
+        else:
+            print("Course not found!")
 
     def start_program(self):
         self.ui.welcome()
@@ -63,7 +71,7 @@ class OneGrade():
 
             if user_command == "a":
                 course_to_check = input("Which Course: ").upper()
-                if not self.isCourseInSession(course_to_check, courses_info):
+                if not self.isCourseInSession(course_to_check, session):
                     print("Course not found in this session!")
                 else:
                     return course_to_check
@@ -107,8 +115,8 @@ class OneGrade():
         self.db.insert_course(cname, int(credit), session, int(targetGrade))
 
     def deleteCourse(self, session):
-        session_to_delete = input("Which Session to Delete: ")
-        self.db.delete_course
+        course_to_delete = input("Which Course to Delete: ")
+        self.db.delete_course(course_to_delete)
 
     def add_component(self, cname, component):
         pass
