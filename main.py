@@ -88,7 +88,7 @@ class OneGrade():
             self.component_analysis(cname)
             user_cmd = input("You may add a course component by command 'a'.\n: ").lower()
             if user_cmd == "a":
-                pass
+                self.add_component(cname)
             elif user_cmd == "b":
                 pass
             elif user_cmd == "q":
@@ -101,8 +101,24 @@ class OneGrade():
         analyze = analyzer(cname, target_grade, grade_details, self.db)
         self.ui.show_analysis(grade_details, analyze)
 
-    def add_component(self, cname, component):
-        pass
+    def add_component(self, cname):
+        component_name = input("Name of Component you want add: ")
+        weight = input("Weight: ")
+        Grade = input("Grade: ")
+        try:
+            float(weight), float(Grade)
+        except Exception as ValueError:
+            print("Weight must be a number, grade may be a number or None.")
+            return
+
+        if self.db.isComponentAdded(cname, component_name):
+            print("Component already exists.")
+        else:
+            if Grade == "":
+                Grade = None
+            self.db.insert_component(cname, component_name, weight, Grade)
+
+
 
 
 def main():
