@@ -39,7 +39,11 @@ class OneGrade_UI():
         print(self.grade_format.format("Course", "Component", "Weight", "Grade"))
         print(" {}".format("-"*60))
         for detail in courses_details:
-            print(self.grade_format.format(detail[0], detail[1], detail[2], detail[3]))
+            if detail[3] is not None:
+                print(self.grade_format.format(detail[0], detail[1], detail[2], detail[3]))
+            else:
+                print(self.grade_format.format(detail[0], detail[1], detail[2], "Unknown"))
             analyze.comment_component(detail[2], detail[3])
             print(" {}".format("-"*60))
+            
         analyze.comment_course()

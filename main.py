@@ -85,10 +85,10 @@ class OneGrade():
 
     def component_analysis(self, cname):
         target_grade = self.db.get_target_grade(cname)
-        courses_details = self.db.retrieveCourseGradeData(cname)
+        grade_details = self.db.retrieveCourseGradeData(cname)
 
-        analyze = analyzer(cname, target_grade)
-        self.ui.show_analysis(courses_details, analyze)
+        analyze = analyzer(cname, target_grade, grade_details)
+        self.ui.show_analysis(grade_details, analyze)
 
     def add_component(self, cname, component):
         pass
