@@ -114,9 +114,11 @@ class DBase():
         self.cursor.execute("SELECT Weight, Grade FROM CourseGrade WHERE cname=:cname and Grade >= 0;", {"cname":cname})
         rows = self.cursor.fetchall()
         gain_so_far = 0
+        total_weight = 0
         for row in rows:
             gain_so_far += (row[0] / 100 * row[1])
-        return gain_so_far
+            total_weight += row[0]
+        return gain_so_far, total_weight
 
 if __name__ == '__main__':
     db = DBase()
