@@ -18,6 +18,10 @@ class OneGrade():
 
             if session_chosen=="Q":
                 sys.exit()
+
+            elif session_chosen == "A": # add a session
+                self.addCourseInNewSession()
+
             elif self.db.isSessionEmpty(session_chosen):
                 print("Invalid session.")
                 continue
@@ -74,9 +78,11 @@ class OneGrade():
             elif user_command == "b":
                 self.addCourse(session)
                 continue
-            elif user_command == "d":
-                self.del_Course(session)
+
+            elif user_command == "c":
+                self.deleteCourse(session)
                 continue
+
             elif user_command == "q":
                 return None
             else:
