@@ -124,7 +124,12 @@ class OneGrade():
                 Grade = None
             self.db.insert_component(cname, component_name, weight, Grade)
 
-
+    def addCourseInNewSession(self):
+        cname = input("Course Name: ")
+        credit = input("Course Credit(s): ")
+        session = input("Course Session: ")
+        targetGrade = input("Target Grade: ")
+        self.db.insert_course(cname, int(credit), session, int(targetGrade))
 
 
 def main():
