@@ -52,15 +52,21 @@ class DBase():
             return True
         else:
             return False
-        
-    def retrieveCourseInfoData(self):
-        self.cursor.execute("SELECT * FROM CourseInfo;")
+    
+    def retrieveSessions(self):
+        self.cursor.execute("SELECT distinct session FROM CourseInfo order by session;",)
+        rows = self.cursor.fetchall()
+        return rows
+
+    def retrieveCourseInfoData(self, session):
+        self.cursor.execute("SELECT * FROM CourseInfo WHERE session=:session;", {"session":session})
         rows = self.cursor.fetchall() # each course info
         return rows
 
-    def retrieveCourseGradeData(self):
-        self.cursor.execute("SELECT * FROM CourseGrade;")
-        rows = self.cursor.fetchall() # each course info
+    def retrieveCourseGradeData(self, cname):
+        self.cursor.execute("SELECT * FROM CourseGrade WHERE cname=:cname\
+            ;", {"cname":cname})
+        rows = self.cursor.fetchall()
         return rows
     
     def isComponentAdded(self, cname, Component):
@@ -98,8 +104,11 @@ class DBase():
             return False
         else:
             return True
-    
 
+    def get_target_grade(self, cname):
+        self.cursor.execute("SELECT TargetGrade FROM CourseInfo WHERE cname=:cname;", {"cname":cname})
+        row = self.cursor.fetchone()
+        return row[0]
 
 if __name__ == '__main__':
     db = DBase()
