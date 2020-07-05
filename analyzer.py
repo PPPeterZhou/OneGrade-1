@@ -8,12 +8,15 @@ class analyzer():
         self.total_lost_marks = self.total_weight - self.total_mark
         
     def calculate_grade_needed(self, weight):
-        pass
+        new_weight = self.total_weight + weight
+        target_mark = new_weight * self.target_grade / 100
+        temp = target_mark - self.total_mark
+        return temp / weight * 100
 
     def comment_component(self, weight, grade): #grade in percent%, weight in percent%
         if grade is None:
             grade_needed = self.calculate_grade_needed(weight)
-            print(self.comment_format.format("You need at least {0} percent to achieve your goal.".format(grade_needed)))
+            print(self.comment_format.format("You need at least {0:.3}% to achieve your goal.".format(grade_needed)))
         elif grade<self.target_grade:
             lostmark = (100-grade)*weight/100
             print(self.comment_format.format("You have lost {0}% of the total mark in this component.".format(lostmark)))
