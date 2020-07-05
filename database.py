@@ -128,6 +128,6 @@ if __name__ == '__main__':
     db.insert_course("MATH418", 3, "2020Winter", 88)
     db.insert_component("MATH217", "Midterm", 20, 100)
     db.insert_component("MATH217", "Midterm2", 20, 99)
-    db.insert_component("MATH317", "Midterm2", 50, 99)
-    db.insert_component("MATH317", "Midterm2", 20, 99)
+    db.insert_component("MATH317", "Midterm", 20, 90)
+    db.insert_component("MATH317", "Midterm2", 20, 50)
     db.insert_component("MATH217", "Final", 60)

@@ -26,7 +26,7 @@ class analyzer():
 
     def comment_course(self):
         if self.total_lost_marks >= (100-self.target_grade):
-            print(" Your goal is unrealistic, you are {0:.3}% behind of your goal.\n".format(self.traget_grade-(100-self.total_lost_marks)))
+            print(" Your goal is unrealistic, you are {0:.3}% behind of your goal.".format(self.target_grade-(100-self.total_lost_marks)))
         else:
             print(" Your goal is achievable, you have lost {0:.3}% of the total grade.".format(self.total_lost_marks))
         print(" Your current average is {0:.3%}.\n".format(self.total_mark/self.total_weight))
