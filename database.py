@@ -30,18 +30,23 @@ class DBase():
         self.conn.commit()
 
     def insert_course(self, cname, cnumber, credit, session, TargetGrade):
+        cname = cname.upper()
+        session = session.upper()
         if not self.isCourseAdded(cname, cnumber):
             self.cursor.execute("INSERT INTO CourseInfo VALUES\
                  (?, ?, ?, ?, ?);", (cname, cnumber, credit, session, TargetGrade))
             self.conn.commit()
 
     def delete_course(self, cname, cnumber):
+        cname = cname.upper()
+        session = session.upper()
         if self.isCourseAdded(cname, cnumber):
             self.cursor.execute("DELETE FROM CourseInfo \
             WHERE cname=:cname AND cnumber=:cnumber;", {"cname":cname, "cnumber":cnumber})
             self.conn.commit()
     
     def isCourseAdded(self, cname, cnumber):
+        cname = cname.upper()
         self.cursor.execute("SELECT * FROM CourseInfo \
         WHERE cname=:cname AND cnumber=:cnumber;", {"cname":cname, "cnumber":cnumber})
         rows = self.cursor.fetchall()
@@ -87,12 +92,22 @@ class DBase():
         self.cursor.execute("DELETE FROM CourseInfo;")
         self.conn.commit()
 
+    def isSessionEmpty(self, session):
+        session = session.upper()
+        self.cursor.execute("SELECT * FROM CourseInfo WHERE session=:session;", {"session":session})
+        rows = self.cursor.fetchall()
+        if rows:
+            return False
+        else:
+            return True
+
 
 if __name__ == '__main__':
     db = DBase()
     db.insert_course("MATH", 217, 3, "2020FALL", 90)
     db.insert_course("MATH", 317, 3, "2020FALL", 89)
     db.insert_course("MATH", 417, 3, "2020FALL", 88)
+    db.insert_course("MATH", 418, 3, "2020Winter", 88)
     db.insert_component("MATH", 217, "Midterm", 50, 100)
     db.insert_component("MATH", 217, "Midterm2", 50, 99)
     db.insert_component("MATH", 317, "Midterm2", 50, 99)

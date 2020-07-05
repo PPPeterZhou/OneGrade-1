@@ -1,6 +1,6 @@
 import analyzer
 import sqlite3
-import time
+import time, sys
 from database import DBase
 
 class OneGrade():
@@ -15,7 +15,8 @@ class OneGrade():
 
     def show_dashboard(self):
         self.welcome()
-        self.chooseSession()
+        while True:
+            self.chooseSession()
 
     def welcome(self):
         print("\n            -------------------------------")
@@ -35,65 +36,80 @@ class OneGrade():
             session_list.append(course[3])
         session_list = list(dict.fromkeys(session_list))
 
-        session = ""
-        for element in session_list:
-            session += (element + "   ")
-        print("|  " + session + "  |")
+        for session in session_list:
+            print("|{0}|".format(str(session).center(47)))
+            print(" -----------------------------------------------")
 
-        print(" -----------------------------------------------")
-        session_chosen = input("I choose: ")
+        while True:
+            session_chosen = input(": ").upper()
+            if session_chosen=="Q":
+                sys.exit()
+            elif self.db.isSessionEmpty(session_chosen):
+                print("Invalid session.")
+                continue
+            else:
+                break
 
-        self.show_courses(session_chosen)
+        self.command(session_chosen)
 
     def show_courses(self, session):
         courses_info = self.db.retrieveCourseInfoData()
 
-        print("\n -----------------Courses Information---------------")
-        print("|Course       Credits      Session      Target Grade|")
+        print("\n ----------------Courses Information--------------")
+        print("|Course      Credits      Session      TargetGrade|")
         for course in courses_info:
-            if course[3].upper() == session.upper():
-                print("|%s%s         %s         %s          %s     |" % (course[0], course[1], course[2], course[3], course[4]))
-        print(" ---------------------------------------------------")
-        self.command(session.upper())
+            if course[3] == session:
+                print("|{0:<12s}{1}{2}{3}|".format(course[0]+str(course[1]), str(course[2]).center(8), str(course[3]).center(20), str(course[4]).center(9)))
+                print(" -------------------------------------------------")
 
     def command(self, session):
         courses_info = self.db.retrieveCourseInfoData()
         course_list = []
         for course in courses_info:
-            if course[3].upper() == session.upper():
-                course_list.append((course[0] + str(course[1])).upper())
+            if course[3] == session:
+                course_list.append(course[0] + str(course[1]))
         course_list = list(dict.fromkeys(course_list))
 
-        print("\n            -----------------------------------------")
-        print("           /       What Would You Like to Do?      /")
-        print("          /    a: Check the Detail of the Course  /")
-        print("         /     b: Add a new Course               /")
-        print("        -----------------------------------------")
-        user_command = input("I want to: ")
         while True:
+            self.show_courses(session)
+            print("\n            -----------------------------------------")
+            print("           /       What Would You Like to Do?      /")
+            print("          /    a: Check the Detail of the Course  /")
+            print("         /     b: Add a new Course               /")
+            print("        -----------------------------------------")
+            user_command = input(": ").lower()
             if user_command == "a":
                 while True:
-                    course_to_check = input("Which Course: (e.g. MATH217) ")
-                    if course_to_check.upper() not in course_list:
+                    course_to_check = input("Which Course: ").upper()
+                    if course_to_check not in course_list:
                         print("Invalid Input!")
                     else:
-                        self.courseDetail(course_to_check.upper())
-                        break
-                break
+                        self.courseDetail(course_to_check)
+                    break
             elif user_command == "b":
                 self.addCourse(session)
+                continue
+            elif user_command == "q":
                 break
             else:
                 print("Invalid Input!")
 
     def courseDetail(self, course):
-        courses_details = self.db.retrieveCourseGradeData()
-        print("\n -----------------Courses Grade--------------------")
-        print("|Course        Component        Weight        Grade|")
-        for detail in courses_details:
-            if course == (detail[0] + str(detail[1])):
-                print("|%s        %s          %s         %s|" % (course, detail[2], detail[3], detail[4]))
-        print(" --------------------------------------------------")
+        while True:
+            courses_details = self.db.retrieveCourseGradeData()
+            print("\n -----------------Courses Grade--------------------")
+            print("|Course        Component        Weight        Grade|")
+            for detail in courses_details:
+                if course == (detail[0] + str(detail[1])):
+                    print("|%s        %s          %s         %s|" % (course, detail[2], detail[3], detail[4]))
+            print(" --------------------------------------------------")
+            print("You may add a course component by command 'a'.")
+            user_input = input(": ").lower()
+            if user_input == "q":
+                break
+            else:
+                continue
+
 
 
     def addCourse(self, session):
