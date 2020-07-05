@@ -4,19 +4,8 @@ import time, sys
 from database import DBase
 
 class OneGrade():
-    def __init__(self, path):
+    def __init__(self):
         self.db = DBase()
-
-
-    def connect(self):
-        self.connection = sqlite3.connect(self.path)
-        self.cursor = self.connection.cursor()
-        return
-
-    def show_dashboard(self):
-        self.welcome()
-        while True:
-            self.chooseSession()
 
     def welcome(self):
         print("\n            -------------------------------")
@@ -24,23 +13,14 @@ class OneGrade():
         print("           ------------------------------\n")
 
     def chooseSession(self):
-        courses_info = self.db.retrieveCourseInfoData()
         print("\n        --------------------------------------")
         print("       / Which Session Would You Like to See?/")
         print("       --------------------------------------\n")
         print("")
         print(" --------------------Session--------------------")
 
-        session_list = []
-        for course in courses_info:
-            session_list.append(course[3])
-        session_list = list(dict.fromkeys(session_list))
-
-        for session in session_list:
-            print("|{0}|".format(str(session).center(47)))
-            print(" -----------------------------------------------")
-
         while True:
+            self.show_sessions()
             session_chosen = input(": ").upper()
             if session_chosen=="Q":
                 sys.exit()
@@ -50,7 +30,18 @@ class OneGrade():
             else:
                 break
 
-        self.command(session_chosen)
+        return session_chosen
+    
+    def show_sessions(self):
+        courses_info = self.db.retrieveCourseInfoData()
+        session_list = []
+        for course in courses_info:
+            session_list.append(course[3])
+        session_list = list(dict.fromkeys(session_list))
+
+        for session in session_list:
+            print("|{0}|".format(str(session).center(47)))
+            print(" -----------------------------------------------")
 
     def show_courses(self, session):
         courses_info = self.db.retrieveCourseInfoData()
@@ -62,37 +53,55 @@ class OneGrade():
                 print("|{0:<12s}{1}{2}{3}|".format(course[0]+str(course[1]), str(course[2]).center(8), str(course[3]).center(20), str(course[4]).center(9)))
                 print(" -------------------------------------------------")
 
-    def command(self, session):
+    def isCourseInSession(self, course_selected, session):
         courses_info = self.db.retrieveCourseInfoData()
         course_list = []
         for course in courses_info:
             if course[3] == session:
                 course_list.append(course[0] + str(course[1]))
         course_list = list(dict.fromkeys(course_list))
+        return (course_selected in course_list)
 
+    def take_command(self, session):
+        self.show_courses(session)
+        print("\n            -----------------------------------------")
+        print("           /       What Would You Like to Do?      /")
+        print("          /    a: Check the Detail of the Course  /")
+        print("         /     b: Add a new Course               /")
+        print("        -----------------------------------------")
+        return input(": ").lower()
+
+    def start_program(self):
+        self.welcome()
         while True:
-            self.show_courses(session)
-            print("\n            -----------------------------------------")
-            print("           /       What Would You Like to Do?      /")
-            print("          /    a: Check the Detail of the Course  /")
-            print("         /     b: Add a new Course               /")
-            print("        -----------------------------------------")
-            user_command = input(": ").lower()
-            if user_command == "a":
-                while True:
-                    course_to_check = input("Which Course: ").upper()
-                    if course_to_check not in course_list:
-                        print("Invalid Input!")
-                    else:
-                        self.courseDetail(course_to_check)
+            session_chosen = self.chooseSession()
+            while True:
+                course_selected = self.command(session_chosen)
+                if course_selected:
+                    self.courseDetail(course_selected)
+                elif course_selected is False:
                     break
+                else:
+                    continue
+
+    def command(self, session):
+        while True:
+            user_command = self.take_command(session)
+
+            if user_command == "a":
+                course_to_check = input("Which Course: ").upper()
+                if not self.isCourseInSession(course_to_check, session):
+                    print("Course not found in this session!")
+                else:
+                    return course_to_check
             elif user_command == "b":
                 self.addCourse(session)
                 continue
             elif user_command == "q":
-                break
+                return False
             else:
                 print("Invalid Input!")
+                continue
 
     def courseDetail(self, course):
         while True:
@@ -110,8 +119,6 @@ class OneGrade():
             else:
                 continue
 
-
-
     def addCourse(self, session):
         cname = input("Course Name: ")
         cnumber = input("Course Number: ")
@@ -121,9 +128,8 @@ class OneGrade():
 
 
 def main():
-    path = "./grades.db"
-    program = OneGrade(path)
-    program.show_dashboard()
+    program = OneGrade()
+    program.start_program()
 
 if __name__ == '__main__':
     main()
