@@ -1,6 +1,7 @@
 class OneGrade_UI():
     def __init__(self):
-        pass
+        self.course_format = "|{0:<15s}{1:^8}{2:^15}{3:^15}|"
+        self.grade_format = "|{0:<15s}{1:^15}{2:^15}{3:^15}|"
 
     def welcome(self):
         print("\n            -------------------------------")
@@ -27,15 +28,18 @@ class OneGrade_UI():
         print("        -----------------------------------------")
 
     def show_courses(self, courses_info):
-        print("\n ----------------Courses Information--------------")
-        print("|Course      Credits      Session      TargetGrade|")
+        print("\n {0}Courses Information{0}".format("-"*17))
+        print(self.course_format.format("Course", "Credits", "Session", "TargetGrade"))
         for course in courses_info:
-            print("|{0:<12s}{1:^12}{2:^12}{3:^12}|".format(course[0], course[1], course[2], course[3]))
-            print(" -------------------------------------------------")
+            print(self.course_format.format(course[0], course[1], course[2], course[3]))
+            print(" {}".format("-"*54))
 
-    def show_analysis(self, courses_details):
-        print("\n {0}Courses Grade{0}".format(18*"-"))
-        print("|{0:<12}{1:^12}{2:^12}{3:^12}|".format("Course", "Component", "Weight", "Grade"))
+    def show_analysis(self, courses_details, analyze):
+        print("\n {0}Courses Grades{0}".format(23*"-"))
+        print(self.grade_format.format("Course", "Component", "Weight", "Grade"))
+        print(" {}".format("-"*60))
         for detail in courses_details:
-            print("|{0:<12}{1:^12}{2:^12}{3:^12}|".format(detail[0], detail[1], detail[2], detail[3]))
-        print(" {}".format("-"*49))
+            print(self.grade_format.format(detail[0], detail[1], detail[2], detail[3]))
+            analyze.comment_component(detail[2], detail[3])
+            print(" {}".format("-"*60))
+        analyze.comment_course()
