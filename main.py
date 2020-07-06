@@ -79,7 +79,7 @@ class OneGrade():
                 self.addCourse(session)
                 continue
 
-            elif user_command == "c":
+            elif user_command == "d":
                 self.deleteCourse(session)
                 continue
 
@@ -92,7 +92,7 @@ class OneGrade():
     def courseDetail(self, session, cname):
         while True:
             self.component_analysis(cname)
-            user_cmd = input("You may add a course component by command 'a'.\n: ").lower()
+            user_cmd = input(" You may add a course component by command 'a'.\n: ").lower()
             if user_cmd == "a":
                 self.add_component(cname)
             elif user_cmd == "b":
@@ -111,17 +111,25 @@ class OneGrade():
         component_name = input("Name of Component you want add: ")
         weight = input("Weight: ")
         Grade = input("Grade: ")
-        try:
-            float(weight), float(Grade)
-        except Exception as ValueError:
-            print("Weight must be a number, grade may be a number or None.")
+        if Grade == "":
+            Grade = None
+            try:
+                float(weight)
+            except Exception as ValueError:
+                print("Weight must be a number, grade may be a number or None.")
+                return
+            self.db.insert_component(cname, component_name, weight, Grade)
             return
+        else:
+            try:
+                float(weight), float(Grade)
+            except Exception as ValueError:
+                print("Weight must be a number, grade may be a number or None.")
+                return
 
         if self.db.isComponentAdded(cname, component_name):
             print("Component already exists.")
         else:
-            if Grade == "":
-                Grade = None
             self.db.insert_component(cname, component_name, weight, Grade)
 
     def addCourseInNewSession(self):
@@ -130,6 +138,10 @@ class OneGrade():
         session = input("Course Session: ")
         targetGrade = input("Target Grade: ")
         self.db.insert_course(cname, int(credit), session, int(targetGrade))
+
+    def deleteCourse(self, session):
+        course_to_delete = input("Which Course to Delete: ").upper()
+        self.db.delete_course(course_to_delete)
 
 
 def main():

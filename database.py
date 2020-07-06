@@ -13,7 +13,7 @@ class DBase():
                             cname     char(16),\
                             credits     int,\
                             session     char(16),\
-                            TargetGrade     int,\
+                            TargetGrade     float,\
                             PRIMARY KEY (cname) \
                             );")
         self.cursor.execute("CREATE TABLE IF NOT EXISTS CourseGrade(\
@@ -32,7 +32,7 @@ class DBase():
         session = session.upper()
         if not self.isCourseAdded(cname):
             self.cursor.execute("INSERT INTO CourseInfo VALUES\
-                 (?, ?, ?, ?);", (cname, credit, session, TargetGrade))
+                 (?, ?, ?, ?);", (cname, credit, session, float(TargetGrade)))
             self.conn.commit()
 
     def delete_course(self, cname):
@@ -112,8 +112,8 @@ class DBase():
     def sum_weight(self, cname):
         self.cursor.execute("SELECT Weight, Grade FROM CourseGrade WHERE cname=:cname and Grade >= 0;", {"cname":cname})
         rows = self.cursor.fetchall()
-        gain_so_far = 0
-        total_weight = 0
+        gain_so_far = 0.0
+        total_weight = 0.0
         for row in rows:
             gain_so_far += (row[0] / 100 * row[1])
             total_weight += row[0]

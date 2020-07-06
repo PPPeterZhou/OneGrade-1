@@ -1,7 +1,6 @@
 class analyzer():
     def __init__(self, cname, target_grade, grade_details, db):
         self.cname = cname
-        self.total_lost_marks = 0.0
         self.target_grade = target_grade
         self.comment_format = "|{0:^60}|"
         self.total_mark, self.total_weight = db.sum_weight(cname)
@@ -29,4 +28,5 @@ class analyzer():
             print(" Your goal is unrealistic, you are {0:.3}% behind of your goal.".format(self.target_grade-(100-self.total_lost_marks)))
         else:
             print(" Your goal is achievable, you have lost {0:.3}% of the total grade.".format(self.total_lost_marks))
-        print(" Your current average is {0:.3%}.\n".format(self.total_mark/self.total_weight))
+        if self.total_weight != 0.0:
+            print(" Your current average is {0:.3%}, your goal is {1:.3}%.\n".format(self.total_mark/self.total_weight, self.target_grade))
