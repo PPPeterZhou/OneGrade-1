@@ -92,13 +92,18 @@ class OneGrade():
     def courseDetail(self, session, cname):
         while True:
             self.component_analysis(cname)
-            user_cmd = input(" You may add a course component by command 'a'.\n: ").lower()
+            user_cmd = input(" You may add a course component by command 'a', or delete by 'd'.\n: ").lower()
             if user_cmd == "a":
                 self.add_component(cname)
-            elif user_cmd == "b":
-                pass
+            elif user_cmd == "d":
+                self.del_component(cname)
             elif user_cmd == "q":
                 break
+    
+    def del_component(self, cname):
+        component_name = input("Name of Component you want delete: ")
+        if self.db.isComponentAdded(cname, component_name):
+            self.db.delete_component(cname, component_name)
 
     def component_analysis(self, cname):
         target_grade = self.db.get_target_grade(cname)
